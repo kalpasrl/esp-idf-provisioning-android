@@ -43,6 +43,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Bluetooth implementation of the Transport protocol.
  */
@@ -175,6 +177,17 @@ public class BLETransport implements Transport {
 
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 Log.e(TAG, "Connected to GATT server.");
+
+                try {
+                    sleep(500);
+                    Log.e(TAG, "Changing Mtu");
+                    bluetoothGatt.requestMtu(512);
+                    sleep(500);
+                    Log.e(TAG, "Changed Mtu");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 gatt.discoverServices();
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.e(TAG, "Disconnected from GATT server.");
